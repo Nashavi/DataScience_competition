@@ -39,7 +39,7 @@ evalmat <- sparse.model.matrix(~.-1, data = eval)
 deval <- xgb.DMatrix(data = evalmat, label = eresponse)
 
 
-eval_watchlist <- list(train=dtrain, test=deval)
+eval_watchlist <- list(eval=deval,train=dtrain)
 
 testdat<-read.csv("test.csv")
 
@@ -63,7 +63,8 @@ mod <- xgb.train(data=dtrain
                  #, num_class=2
                  #, base_score=.9
                  #, min_child_weight = 10
-                 , subsample=.5
+                 , early.stop.round = 10
+                 #, subsample=.5
                  #, lambda=.6
                  #, colsample_bylevel=0.6
                  )
@@ -87,7 +88,7 @@ submission$predictions<-predictions
 names(submission)<- c("Cust_id","Active_Customer")
 submission$Active_Customer<-ifelse(submission$Active_Customer>0.515,1,0)
 
-write.csv(submission,file="submission4.csv",row.names = F)
+write.csv(submission,file="submission6.csv",row.names = F)
 
 importance <- as.data.frame(xgb.importance(feature_names = trainmat@Dimnames[[2]], model = mod))
 save(importance,file="varimp.RData",compress=T)
