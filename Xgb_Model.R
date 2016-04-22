@@ -9,6 +9,8 @@ head(d)
 
 set.seed(66)
 
+sum[d$Active_Customer==0]
+
 #require(psych)
 #describe<-as.data.frame(describe(d))
 
