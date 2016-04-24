@@ -29,6 +29,7 @@ enetModel <- enet(
 #Error in enet(x = trainmat, y = response, lambda = 0.01, trace = TRUE,  : 
 #Some of the columns of x have zero variance
 
+save(enetModel,file="enetModel.RData")
 
 
 enetPreds <- predict(enetModel
