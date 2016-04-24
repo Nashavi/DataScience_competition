@@ -1,23 +1,12 @@
-require(caret)
-require(MASS)
+source("LDA Modeling/LDA Setup.R")
 
-d <- read.csv("Train.csv")
-id <- as.numeric(d$Cust_id)
-active <- d$Active_Customer
-d <- d[,c(-1,-257)]
-head(d)
-tail(d)
+#create lda model 
+lda.fit <- lda(train.active~.,data=train)
+summary(lda.fit)
+plot(lda.fit)
 
-set.seed(686)
-
-#d <- model.matrix(active ~.,data=d)
-nzv <- nearZeroVar(d, saveMetrics= TRUE)
-zv <- which(nzv$zeroVar==TRUE)
-
-#d$Cust_status <- as.numeric(as.character(unclass(d$Cust_status)))
-
-preProcessValues <- preProcess(d,method = c("center","scale"))
-d <- predict(preProcessValues,d)
-
-lda.fit <- lda(active~.,data=d)
-
+#make predictions
+lda.pred <- predict(lda.fit,eval)
+lda.class = lda.pred$class
+table(lda.class,eval.active)
+mean(lda.class==eval.active)
