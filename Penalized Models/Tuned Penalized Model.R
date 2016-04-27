@@ -18,3 +18,11 @@ glmnTuned <- train(x = train,
                    trControl = ctrl)
 
 save(glmnTuned,file="Penalized Models/Tuned glmn Model.RData")
+
+plot(glmnTuned,plotType = "level")
+
+glmnTuned$bestTune
+
+predict(glmnTuned,
+        newx = x.eval,
+        type="prob")
