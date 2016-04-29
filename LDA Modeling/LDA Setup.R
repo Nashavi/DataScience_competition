@@ -35,6 +35,22 @@ eval <- data.frame(predict(dmyCoding,newdata = eval))
 preProcessValues <- preProcess(eval,method = c("center","scale"))
 eval <- predict(preProcessValues,eval)
 
+
+test <- read.csv("Test.csv")
+test.id <- as.numeric(test$Cust_id)
+test <- test[,c(-1)]
+
+#remove zero variance vars
+test <- test[,-zvcols] 
+
+# change factors to dummy vars
+test <- data.frame(predict(dmyCoding,newdata = test))
+
+# center and scale the variables 
+preProcessValues <- preProcess(test,method = c("center","scale"))
+test <- predict(preProcessValues,test)
+
+
 #cleanup environment 
 rm(nzv)
 rm(zvcols)
