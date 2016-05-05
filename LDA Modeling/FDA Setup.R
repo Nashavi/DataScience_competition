@@ -1,5 +1,7 @@
+
 require(caret)
 require(mda)
+require(earth)
 require(MASS)
 set.seed(686)
 
@@ -18,7 +20,7 @@ dmyCoding <- dummyVars(~.,data=train)
 train <- data.frame(predict(dmyCoding,newdata = train))
 
 # center and scale the variables 
-preProcessValues <- preProcess(train,method = c("center","scale"))
+preProcessValues <- preProcess(train,method = c("center","scale","knnImpute"))
 train <- predict(preProcessValues,train)
 
 load("eval.RData")
@@ -33,7 +35,7 @@ eval <- eval[,-zvcols]
 eval <- data.frame(predict(dmyCoding,newdata = eval))
 
 # center and scale the variables 
-preProcessValues <- preProcess(eval,method = c("center","scale"))
+preProcessValues <- preProcess(eval,method = c("center","scale","knnImpute"))
 eval <- predict(preProcessValues,eval)
 
 
@@ -48,7 +50,7 @@ test <- test[,-zvcols]
 test <- data.frame(predict(dmyCoding,newdata = test))
 
 # center and scale the variables 
-preProcessValues <- preProcess(test,method = c("center","scale"))
+preProcessValues <- preProcess(test,method = c("center","scale","knnImpute"))
 test <- predict(preProcessValues,test)
 
 
