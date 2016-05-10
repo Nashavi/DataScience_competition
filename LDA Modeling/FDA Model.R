@@ -1,12 +1,11 @@
 source("LDA Modeling/FDA Setup.R")
 
 
-train <- cbind(train,train.active)
 
-train$train.active <- as.factor(train$train.active)
-levels(train$train.active) <- c("No","Yes")
+train$active <- cbind(train.active)
+levels(train$active) <- c("No","Yes")
 
-fdaModel <- fda(train.active ~ .,
+fdaModel <- fda(active ~ .,
                 data = train,
                 method=earth)
 
@@ -22,8 +21,51 @@ confusion(preds,eval.active)
 
 varImp(fdaModel)
 
-train(x = train[,-train$train.active],
-      y = train.active, 
-      method="fda", 
-      metric="ROC",
-      tuneGrid = )
+
+
+
+
+test.preds <- predict(fdaModel,test,type="class")
+
+write.csv(test.preds,file="LDA Modeling/FDA Preds.csv")
+
+active_customer <- train$active
+active_customer <- as.factor(active_customer)
+levels(active_customer) <- c("No","Yes")
+train <- train[,-261]
+
+
+
+fitControl = trainControl(method='CV', #use cross validation
+                          number=5, #set the number of folds
+                          summaryFunction = twoClassSummary, #use two-class classification
+                          classProbs = TRUE) #return probabilities
+
+fdaTuneGrid <- expand.grid(degree = c(2,3), 
+                           nprune = seq(10,40,by=10))
+
+fdaTuned <- train(x = train,
+                  y = active_customer, 
+                  method="fda", 
+                  metric="ROC",
+                  trControl = fitControl,
+                  tuneGrid = fdaTuneGrid)
+
+plot(fdaTuned)
+save(fdaTuned,file="LDA Modeling/FDAModelCVTuned.RData")
+
+fdaTuned$bestTune
+
+train <- cbind(train,active_customer)
+
+fdaModel <- fda(active_customer ~ .,
+                 data = train,
+                degree = 2,
+                nprune = 30,
+                 method=earth)
+
+test.preds <- predict(fdaModel,test,type="class")
+
+write.csv(test.preds,file="LDA Modeling/FDA CV Preds.csv")
+
+
