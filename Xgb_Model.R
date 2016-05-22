@@ -92,4 +92,3 @@ write.csv(submission,file="submission6.csv",row.names = F)
 
 importance <- as.data.frame(xgb.importance(feature_names = trainmat@Dimnames[[2]], model = mod))
 save(importance,file="varimp.RData",compress=T)
-
